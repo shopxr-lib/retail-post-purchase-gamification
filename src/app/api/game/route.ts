@@ -5,7 +5,7 @@ import { log } from "@/lib/utils/logger";
 import { NextResponse } from "next/server";
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "http://localhost:5173",
+  "Access-Control-Allow-Origin": process.env.NEXT_PUBLIC_GAME_URL!,
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
@@ -22,7 +22,7 @@ export async function GET(request: Request) {
   try {
     const ctx = "/api/game";
     log(ctx, "Incoming External Game Request", {
-      allowedOrigin: "http://localhost:5173",
+      allowedOrigin: process.env.NEXT_PUBLIC_GAME_URL,
       origin: request.headers.get("origin"),
     });
 

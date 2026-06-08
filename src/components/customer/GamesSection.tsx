@@ -74,7 +74,7 @@ function GameCard({
     <motion.button
       onClick={
         canPlay
-          ? () => window.open(`http://localhost:5173/?token=${customerId}&campaignId=${campaignId}`, "_blank")
+          ? () => window.open(`${import.meta.env.NEXT_PUBLIC_GAME_URL}/?token=${customerId}&campaignId=${campaignId}`, "_blank")
           : undefined
       }
       disabled={!canPlay || isPlaying}
