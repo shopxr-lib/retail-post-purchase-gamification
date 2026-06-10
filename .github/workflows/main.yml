@@ -1,0 +1,50 @@
+name: Deploy Next.js to Netlify
+
+on:
+  push:
+    branches:
+      - "**"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npm run db:generate
+
+      - name: Deploy to Netlify
+        if: github.ref_name == 'main'
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          DEPLOY_MESSAGE="${COMMIT_MESSAGE:-Deploy ${GITHUB_SHA} from ${GITHUB_REF_NAME}}"
+          npx netlify-cli@latest deploy --prod --message "${DEPLOY_MESSAGE}"
+
+      - name: Deploy branch preview to Netlify
+        if: github.ref_name != 'main'
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          DEPLOY_MESSAGE="${COMMIT_MESSAGE:-Deploy ${GITHUB_SHA} from ${GITHUB_REF_NAME}}"
+          BRANCH_ALIAS=$(echo "${GITHUB_REF_NAME}" | tr '[:upper:]' '[:lower:]' | tr -cs 'a-z0-9-' '-')
+          npx netlify-cli@latest deploy --alias "${BRANCH_ALIAS}" --message "${DEPLOY_MESSAGE}"
