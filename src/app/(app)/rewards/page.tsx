@@ -1,6 +1,7 @@
 import { requireAdminSession } from "@/lib/auth/session";
 import { db } from "@/lib/db/prisma";
 import { AdminRewardsClient } from "./client";
+export const dynamic = "force-dynamic";
 
 export const metadata = { title: "Rewards" };
 
@@ -9,6 +10,13 @@ export default async function RewardsPage() {
 
   const [prizes, stores] = await Promise.all([
     db.customerPrize.findMany({
+      where: {
+        prize: {
+          type: {
+            not: 4,
+          },
+        },
+      },
       orderBy: { wonAt: "desc" },
       take: 50,
       include: {

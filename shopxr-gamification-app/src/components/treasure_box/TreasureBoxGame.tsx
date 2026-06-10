@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { useGameContext } from "./GameContext";
 import { useTreasureLogic } from "./TreasureBoxLogic";
 import { gsap } from "gsap";
-import { useGameStore } from "@src/stores/useGameStore";
-import { GameCheckpoint, TreasureBoxIcon, Loader } from "@src/components";
+import { useGameStore } from "../../stores/useGameStore";
+import { GameCheckpoint, TreasureBoxIcon, Loader } from "../../components";
 import { XIcon } from "lucide-react";
-import { getGameHeader } from "@src/utils";
-import type { IPrize } from "@src/types";
+import { getGameHeader } from "../../utils";
+import type { IPrize } from "../../types";
 
 //* Handle mouse enter for button animations
 const handleButtonMouseEnter = (

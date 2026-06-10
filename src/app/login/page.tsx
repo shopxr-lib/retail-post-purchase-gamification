@@ -18,7 +18,7 @@ type Tab = "customer" | "admin";
 type CustomerStep = "email" | "otp";
 
 // ─── Tab pill ─────────────────────────────────────────────────────────────────
-function TabPill({ tab, active, onClick, label }: { tab: Tab; active: boolean; onClick: () => void; label: string }) {
+function TabPill({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) {
   return (
     <button
       onClick={onClick}
@@ -153,7 +153,7 @@ function CustomerPanel({ from }: { from: string }) {
 }
 
 // ─── Admin panel ──────────────────────────────────────────────────────────────
-function AdminPanel({ from }: { from: string }) {
+function AdminPanel() {
   const router = useRouter();
   const { addToast } = useUIStore();
   const [email, setEmail] = useState("");
@@ -242,7 +242,7 @@ function LoginForm() {
             <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-3xl mb-6">
               🎮
             </div>
-            <h1 className="text-4xl font-black leading-tight">Retail<br />Gamify</h1>
+            <h1 className="text-4xl font-black leading-tight">ShopXR<br /></h1>
             <p className="text-brand-200 mt-3 text-lg font-medium">Post-Purchase Rewards Platform</p>
           </div>
 
@@ -287,8 +287,8 @@ function LoginForm() {
 
             {/* Tabs */}
             <div className="flex gap-1 p-1 bg-slate-100 rounded-xl mb-7">
-              <TabPill tab="customer" active={tab === "customer"} onClick={() => setTab("customer")} label="Customer" />
-              <TabPill tab="admin"    active={tab === "admin"}    onClick={() => setTab("admin")}    label="Admin" />
+              <TabPill active={tab === "customer"} onClick={() => setTab("customer")} label="Customer" />
+              <TabPill active={tab === "admin"}    onClick={() => setTab("admin")}    label="Admin" />
             </div>
 
             {/* Panel */}
@@ -302,7 +302,7 @@ function LoginForm() {
               >
                 {tab === "customer"
                   ? <CustomerPanel from={from} />
-                  : <AdminPanel from={from} />
+                  : <AdminPanel />
                 }
               </motion.div>
             </AnimatePresence>

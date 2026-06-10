@@ -1,11 +1,6 @@
-// ============================================================
-// RETAIL POST-PURCHASE GAMIFICATION PLATFORM
-// Prisma Schema v2.0
-// ============================================================
-
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+  previewFeatures = ["fullTextSearchPostgres"]
   // required for netlify
   binaryTargets   = ["native", "rhel-openssl-3.0.x"]
 }

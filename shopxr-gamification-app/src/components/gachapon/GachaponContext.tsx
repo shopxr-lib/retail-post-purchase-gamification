@@ -1,8 +1,8 @@
 import { createContext, useContext, useState, useEffect, type ReactNode, useMemo } from "react";
 import type { GameContextType, GameState, PrizeDetail } from "./types";
-import { useGameStore } from "@src/stores/useGameStore";
-import type { IPrize } from "@src/types";
-import { getPrizeMessage } from "@src/utils";
+import { useGameStore } from "../../stores/useGameStore";
+import type { IPrize } from "../../types";
+import { getPrizeMessage } from "../../utils";
 
 const GachaponContext = createContext<GameContextType | undefined>(undefined);
 

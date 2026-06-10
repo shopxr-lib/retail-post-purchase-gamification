@@ -1,4 +1,4 @@
-import type { IPrize } from "@src/types";
+import type { IPrize } from "../..//types";
 import type { ReactNode } from "react";
 
 /* ---------- Base Types ---------- */
@@ -25,7 +25,6 @@ export interface ScratchGameContextType {
 export interface PrizeDisplay {
   id: number;
   type: number;
-  discountCode: string | null;
   icon: string;
   iconImage: string | null;
   name: string;

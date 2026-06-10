@@ -114,14 +114,11 @@ export async function addPrizeToCampaignAction(campaignId: string, input: unknow
   const parsed = prizeSchema.safeParse(input);
   if (!parsed.success) return { error: parsed.error.errors[0].message };
 
-  const totalPlaysNow = await db.gamePlay.count({ where: { campaignId } });
-
   const prize = await db.prize.create({
     data: {
       campaignId,
       ...parsed.data,
       value: parsed.data.value ?? null,
-      totalPlaysAtCreation: totalPlaysNow,
     },
   });
   return { success: true, prizeId: prize.id };

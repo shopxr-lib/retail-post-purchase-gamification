@@ -325,7 +325,7 @@ function PrizeRow({
               <p className="truncate text-sm font-semibold text-slate-800">{prize.name}</p>
               <div className="mt-0.5 flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500">
-                  {PRIZE_LABELS[prize.type]}
+                  {capitalize(PRIZE_LABELS[prize.type])}
                 </span>
                 {prize.value && (
                   <span className="max-w-[120px] truncate text-xs text-slate-400">
@@ -335,7 +335,7 @@ function PrizeRow({
                 <span className="text-xs text-slate-400">
                   {prize.winningProbability.mode === "PERCENTAGE"
                     ? `${prize.winningProbability.value}% chance`
-                    : `Every ${prize.winningProbability.value}th play`}
+                    : `On ${prize.winningProbability.value}th play`}
                 </span>
               </div>
             </div>
@@ -412,7 +412,7 @@ function PrizeRow({
                     : "border-slate-200 text-slate-500 hover:border-slate-300"
                 }`}
               >
-                {m === "PERCENTAGE" ? "Percentage" : "Every N-th Play"}
+                {m === "PERCENTAGE" ? "Percentage" : "On N-th Play"}
               </button>
             ))}
           </div>
@@ -425,7 +425,7 @@ function PrizeRow({
               placeholder={
                 form.winningProbability.mode === "PERCENTAGE"
                   ? "% chance (e.g. 10)"
-                  : "Every N-th play (e.g. 50)"
+                  : "On N-th play (e.g. 50)"
               }
               value={form.winningProbability.value}
               onChange={(e) => setForm((f) => ({ ...f, probabilityValue: e.target.value }))}
@@ -589,7 +589,7 @@ function AddPrizeForm({
                 : "border-slate-200 bg-white text-slate-500 hover:border-slate-300"
             }`}
           >
-            {m === "PERCENTAGE" ? "Percentage" : "Every N-th"}
+            {m === "PERCENTAGE" ? "Percentage" : "On N-th"}
           </button>
         ))}
       </div>
@@ -599,7 +599,7 @@ function AddPrizeForm({
           type="number"
           min="0.01"
           placeholder={
-            form.winningProbability.mode === "PERCENTAGE" ? "% (e.g. 10)" : "Every N-th play"
+            form.winningProbability.mode === "PERCENTAGE" ? "% (e.g. 10)" : "On N-th play"
           }
           value={form.winningProbability.value}
           onChange={(e) => setForm((f) => ({ ...f, probabilityValue: e.target.value }))}

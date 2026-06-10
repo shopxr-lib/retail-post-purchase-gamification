@@ -125,7 +125,7 @@ function PrizeCard({
           <div className="grid grid-cols-2 gap-1.5">
             {[
               { value: "PERCENTAGE", label: "Winning Percentage", desc: "% chance per play" },
-              { value: "CREDIT_COUNT", label: "Credit Based Count", desc: "Win on every Nth game" },
+              { value: "CREDIT_COUNT", label: "Credit Based Count", desc: "Win on Nth game" },
             ].map((m) => (
               <button
                 key={m.value}
@@ -147,7 +147,7 @@ function PrizeCard({
         {/* Probability Value */}
         <div>
           <label className="mb-1 block text-xs font-semibold tracking-wide text-slate-500">
-            {prize.winningProbability.mode === "PERCENTAGE" ? "Probability %" : "Every N-th Play wins"}
+            {prize.winningProbability.mode === "PERCENTAGE" ? "Probability %" : "N-th Play wins"}
           </label>
           <div className="relative">
             <input
@@ -165,7 +165,7 @@ function PrizeCard({
           </div>
           {prize.winningProbability.mode === "CREDIT_COUNT" && prize.winningProbability.value && (
             <p className="mt-1 text-[11px] text-slate-400">
-              Every {prize.winningProbability.value}th game play wins this prize automatically
+              {prize.winningProbability.value}th game play wins this prize automatically
             </p>
           )}
         </div>

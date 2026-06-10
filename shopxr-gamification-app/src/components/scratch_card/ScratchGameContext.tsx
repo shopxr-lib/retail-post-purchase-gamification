@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import type { ICouponPrize, IPrize } from "@src/types";
+import type { IPrize } from "../../types";
 import type {
   GameState,
   PrizeDisplay,
   ScratchGameContextType,
   ScratchGameProviderProps,
 } from "./types";
-import { useGameStore } from "@src/stores/useGameStore";
-import { getPrizeMessage } from "@src/utils";
+import { useGameStore } from "../../stores/useGameStore";
+import { getPrizeMessage } from "../../utils";
 
 //* Prize Logic
 const mapPrizeToDisplay = (prize: IPrize): PrizeDisplay => {
@@ -37,7 +37,6 @@ const mapPrizeToDisplay = (prize: IPrize): PrizeDisplay => {
     id: prize.id,
     icon,
     type: prize.type,
-    discountCode: (prize as ICouponPrize).discountCode,
     name: defaultName,
     message,
     image: (prize.imageFile?.url as string) ?? null,

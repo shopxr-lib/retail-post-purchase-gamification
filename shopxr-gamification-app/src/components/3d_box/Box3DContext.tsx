@@ -1,8 +1,8 @@
-import type { IPrize } from "@src/types";
+import type { IPrize } from "../../types";
 import { createContext, useContext, useState, type FC } from "react";
 import type { Box3DContextType, Box3DProviderProps } from "./types";
-import { useGameStore } from "@src/stores/useGameStore";
-import { getPrizeMessage } from "@src/utils";
+import { useGameStore } from "../../stores/useGameStore";
+import { getPrizeMessage } from "../../utils";
 
 const Box3DContext = createContext<Box3DContextType | undefined>(undefined);
 

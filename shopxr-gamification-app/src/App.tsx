@@ -1,7 +1,7 @@
 import "./App.css";
 import { useEffect } from "react";
-import { useGameStore } from "@src/stores/useGameStore";
-import { GameLoader, ScratchGame, TreasureBoxGame } from "@src/components";
+import { useGameStore } from "./stores/useGameStore";
+import { GameLoader, ScratchGame, TreasureBoxGame } from "./components";
 import { Box3DProvider } from "./components/3d_box/Box3DContext";
 import BoxMainGame from "./components/3d_box/BoxMainGame";
 import { BlindBoxProvider } from "./components/blind_box/BlindBoxContext";

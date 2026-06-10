@@ -1,5 +1,5 @@
-import { getFileUrl, getPrizeMessage } from "@src/utils";
-import type { IPrize } from "@src/types";
+import { getFileUrl, getPrizeMessage } from "../../utils";
+import type { IPrize } from "../../types";
 import type { PrizeInfo, TreasureLogicReturn } from "./types";
 
 export const useTreasureLogic = (

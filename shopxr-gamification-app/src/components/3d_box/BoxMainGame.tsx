@@ -6,9 +6,9 @@ import * as THREE from "three";
 import { XIcon } from "lucide-react";
 import gsap from "gsap";
 import { Group } from "three";
-import { GameCheckpoint, GiftIcon, Loader } from "@src/components";
-import { useGameStore } from "@src/stores/useGameStore";
-import { getGameHeader } from "@src/utils";
+import { GameCheckpoint, GiftIcon, Loader } from "../../components";
+import { useGameStore } from "../../stores/useGameStore";
+import { getGameHeader } from "../../utils";
 
 interface GLTFResult {
   scene: THREE.Group;
@@ -309,7 +309,7 @@ const Scene3D: React.FC = () => {
 
 const PrizeDisplay: React.FC = () => {
   const { currentPrize, startGame } = useBox3D();
-  const remainingCredit = useGameStore((s) => s.remainingCredit);
+  const remainingCredit = Number(useGameStore((s) => s.remainingCredit));
   const gameSession = useGameStore(s => s.gameSession);
 
   const description = currentPrize?.message;

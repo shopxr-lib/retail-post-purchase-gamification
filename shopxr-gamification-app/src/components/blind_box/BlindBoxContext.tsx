@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer, useMemo, useState, useEffect } from "react";
-import type { IPrize } from "@src/types";
+import type { IPrize } from "../../types";
 import type {
   BlindBoxContextType,
   BlindBoxProviderProps,
@@ -7,8 +7,8 @@ import type {
   GameState,
   PrizeDetail,
 } from "./types";
-import { useGameStore } from "@src/stores/useGameStore";
-import { getPrizeMessage } from "@src/utils";
+import { useGameStore } from "../../stores/useGameStore";
+import { getPrizeMessage } from "../../utils";
 
 // Initial game state
 const initialState: GameState = {

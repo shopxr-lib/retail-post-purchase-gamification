@@ -1,5 +1,5 @@
-import { PRIZE_LABELS, PRIZE_VALUES } from "@src/constants";
-import type { CustomFile, IPrize } from "@src/types";
+import { PRIZE_LABELS, PRIZE_VALUES } from "../constants";
+import type { CustomFile, IPrize } from "../types";
 
 export const getFileUrl = (
   file: CustomFile | File | null | undefined,

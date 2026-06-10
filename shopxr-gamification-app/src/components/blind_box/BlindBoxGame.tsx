@@ -3,10 +3,10 @@ import { gsap } from "gsap";
 import { useBlindBox } from "./BlindBoxContext";
 import { XIcon } from "lucide-react";
 import type { TreasureBoxProps } from "./types";
-import { useGameStore } from "@src/stores/useGameStore";
-import { GameCheckpoint, BlindBoxIcon, Loader } from "@src/components";
-import type { IPrize } from "@src/types";
-import { getGameHeader } from "@src/utils";
+import { useGameStore } from "../../stores/useGameStore";
+import { GameCheckpoint, BlindBoxIcon, Loader } from "../../components";
+import type { IPrize } from "../../types";
+import { getGameHeader } from "../../utils";
 
 function TreasureBox({
   index,

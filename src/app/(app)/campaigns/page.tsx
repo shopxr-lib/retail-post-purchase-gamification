@@ -4,6 +4,8 @@ import { db } from "@/lib/db/prisma";
 import { capitalize } from "@/lib/utils";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = { title: "Campaigns — Admin" };
 
 function campaignStatus(c: {

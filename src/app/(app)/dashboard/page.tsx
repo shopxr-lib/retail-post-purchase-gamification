@@ -44,7 +44,16 @@ export default async function DashboardPage() {
             generatedById: session.id,
           },
         }),
-        db.customerPrize.count({ where: { claimStatus: "UNCLAIMED" } }),
+        db.customerPrize.count({
+          where: {
+            claimStatus: "UNCLAIMED",
+            prize: {
+              type: {
+                not: 4,
+              },
+            },
+          },
+        }),
         db.campaign.findMany({ where: { deletedAt: null }, orderBy: { startDate: "desc" } }),
       ]);
 
@@ -80,7 +89,7 @@ export default async function DashboardPage() {
   const [allCampaigns, prizes] = await Promise.all([
     db.campaign.findMany({ where: { deletedAt: null } }),
     db.customerPrize.findMany({
-      where: { customerId: customer.id },
+      where: { customerId: customer.id, prize: { type: { not: 4 } } },
       orderBy: { wonAt: "desc" },
       take: 10,
       include: {

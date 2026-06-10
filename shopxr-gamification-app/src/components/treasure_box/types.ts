@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { IPrize } from "@src/types";
+import type { IPrize } from "../../types";
 
 /* ---------- Base Types ---------- */
 export type GamePhase = "initial" | "boxSelected" | "gameOver";

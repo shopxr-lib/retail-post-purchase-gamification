@@ -1,6 +1,7 @@
 import { requireAdminSession } from "@/lib/auth/session";
 import { db } from "@/lib/db/prisma";
 import CustomersClient from "./client";
+export const dynamic = "force-dynamic";
 
 export const metadata = { title: "Customers — Admin" };
 
@@ -68,6 +69,12 @@ export default async function CustomersPage({
           orderBy: { createdAt: "desc" },
         },
         prizes: {
+          where: {
+            prizeSnapshot: {
+              path: ["type"],
+              not: 4,
+            },
+          },
           select: {
             id: true,
             claimStatus: true,

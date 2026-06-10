@@ -1,5 +1,6 @@
 import { requireAdminSession } from "@/lib/auth/session";
 import { db } from "@/lib/db/prisma";
+export const dynamic = "force-dynamic";
 
 export const metadata = { title: "Settings — Admin" };
 

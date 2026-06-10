@@ -1,4 +1,4 @@
-import type { IPrize } from "@src/types";
+import type { IPrize } from "../../types";
 
 export type GameState = 'idle' | 'validating' | 'spinning' | 'opening' | "reward";
 

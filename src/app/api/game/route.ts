@@ -165,7 +165,7 @@ export async function GET(request: Request) {
         const creditBasedPrize = campaign?.prizes.find(
           (p) =>
             p.winningProbabilityMode === "CREDIT_COUNT" &&
-            p.winningProbabilityValue === campaign.playCount + 1
+            p.winningProbabilityValue === campaign._count.gamePlays + 1
         );
         if (creditBasedPrize) {
           const reservation = await db.prizeReservation.create({
@@ -320,7 +320,7 @@ export async function GET(request: Request) {
           const creditBasedPrize = campaign?.prizes.find(
             (p) =>
               p.winningProbabilityMode === "CREDIT_COUNT" &&
-              p.winningProbabilityValue === campaign.playCount + 1
+              p.winningProbabilityValue === campaign._count.gamePlays + 1
           );
           if (creditBasedPrize) {
             const reservation = await db.prizeReservation.create({

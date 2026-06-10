@@ -62,7 +62,6 @@ function buildEmailTemplate(code: string, purpose: OTPPurpose): string {
 // ─── OTP Service ─────────────────────────────────────────────────────────────
 
 const OTP_EXPIRY_MINUTES = 10;
-const OTP_LENGTH = 6;
 const MAX_ATTEMPTS = 5;
 const RESEND_COOLDOWN_SECONDS = 60;
 

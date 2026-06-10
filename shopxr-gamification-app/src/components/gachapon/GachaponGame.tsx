@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useGacha } from "./GachaponContext";
-import { useGameStore } from "@src/stores/useGameStore";
-import { getGameHeader } from "@src/utils";
+import { useGameStore } from "../../stores/useGameStore";
+import { getGameHeader } from "../../utils";
 import { GameCheckpoint, Loader } from "..";
 import { XIcon } from "lucide-react";
 import GachaponIcon from "./GachaponIcon";

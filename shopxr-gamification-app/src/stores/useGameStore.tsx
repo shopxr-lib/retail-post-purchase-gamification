@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import { getGameData, startGameSession } from "@src/api";
-import { addPrizeWon } from "@src/api/game";
-import type { IPrize, IWidgetSettings } from "@src/types";
-import { ScreenPosition } from "@src/constants/enums";
+import { getGameData, startGameSession } from "../api";
+import { addPrizeWon } from "../api/game";
+import type { IPrize, IWidgetSettings } from "../types";
+import { ScreenPosition } from "../constants/enums";
 
 interface GameState {
   gameData: {
@@ -68,7 +68,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       const { gameDetails, widgetSettings } = game.data;
       set({
         selectedGame: gameDetails.selectedGame,
-        remainingCredit: gameDetails.remainingCredit,
+        remainingCredit: Number(gameDetails.remainingCredit),
         prizes: gameDetails.prizes,
         playCount: gameDetails.playCount,
         expired: gameDetails.expired,
@@ -124,7 +124,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       }
       set((state) => ({
         initialized: state.selectedGame === selectedGame ? true : false,
-        remainingCredit,
+        remainingCredit: Number(remainingCredit),
         selectedGame: selectedGame,
         playCount,
         expired,

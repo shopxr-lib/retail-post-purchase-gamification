@@ -3,9 +3,9 @@ import { useScratchGame } from "./ScratchGameContext";
 import { XIcon } from "lucide-react";
 import ScratchCard from "./ScratchCard";
 import ScratchPrizeReveal from "./ScratchPrizeReveal";
-import { GameCheckpoint, ScratchCardIcon } from "@src/components";
-import { useGameStore } from "@src/stores/useGameStore";
-import { getGameHeader } from "@src/utils";
+import { GameCheckpoint, ScratchCardIcon } from "../../components";
+import { useGameStore } from "../../stores/useGameStore";
+import { getGameHeader } from "../../utils";
 import { ScratchCardLoader } from "./ScratchCardLoader";
 
 const ScratchGame: React.FC = () => {

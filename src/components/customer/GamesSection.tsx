@@ -2,7 +2,6 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useGameStore, useCustomerStore } from "@/stores";
-import { useGamePlay } from "@/hooks";
 import { GameResultModal } from "./GameResultModal";
 import { GAME_CONFIG, GAME_LABELS } from "@/constants";
 
@@ -68,16 +67,15 @@ function GameCard({
   canPlay: boolean;
 }) {
   const config = GAME_CONFIG[GAME_LABELS[gameType]];
-  const { play, isPlaying } = useGamePlay(gameType, campaignId);
 
   return (
     <motion.button
       onClick={
         canPlay
-          ? () => window.open(`${import.meta.env.NEXT_PUBLIC_GAME_URL}/?token=${customerId}&campaignId=${campaignId}`, "_blank")
+          ? () => window.open(`${process.env.NEXT_PUBLIC_GAME_URL}/?token=${customerId}&campaignId=${campaignId}`, "_blank")
           : undefined
       }
-      disabled={!canPlay || isPlaying}
+      disabled={!canPlay}
       whileHover={canPlay ? { scale: 1.01, y: -1 } : {}}
       whileTap={canPlay ? { scale: 0.98 } : {}}
       style={{ "--glow-color": config.glowColor } as React.CSSProperties}

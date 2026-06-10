@@ -1,4 +1,4 @@
-import { extractCampaignId, extractToken } from "@src/utils";
+import { extractCampaignId, extractToken } from "../utils";
 
 const token = extractToken() ?? "";
 const campaignId = extractCampaignId() ?? "";

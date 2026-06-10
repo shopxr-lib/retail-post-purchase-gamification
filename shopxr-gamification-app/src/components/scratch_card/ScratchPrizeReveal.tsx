@@ -1,6 +1,6 @@
 import React from "react";
 import { useScratchGame } from "./ScratchGameContext";
-import { useGameStore } from "@src/stores/useGameStore";
+import { useGameStore } from "../../stores/useGameStore";
 
 //* Handle mouse enter for button animations
 const handleButtonMouseEnter = (

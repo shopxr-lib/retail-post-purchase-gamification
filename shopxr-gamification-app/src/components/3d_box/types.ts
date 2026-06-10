@@ -1,4 +1,4 @@
-import type { IPrize } from "@src/types";
+import type { IPrize } from "../../types";
 import type { ReactNode } from "react";
 
 /* ---------- Base Types ---------- */

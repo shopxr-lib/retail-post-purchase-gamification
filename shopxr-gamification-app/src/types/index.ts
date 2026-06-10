@@ -1,4 +1,4 @@
-import type { ScreenPosition } from "@src/constants/enums";
+import type { ScreenPosition } from "../constants/enums";
 
 export interface CustomFile {
   id: string | null;
