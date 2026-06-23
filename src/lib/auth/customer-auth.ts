@@ -36,7 +36,7 @@ export async function createCustomerSession(customer: Customer): Promise<string>
   cookieStore.set(SESSION_COOKIE, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "lax",
     expires: expiresAt,
     path: "/",
   });

@@ -27,11 +27,11 @@ export async function middleware(req: NextRequest) {
   }
 
   // Customer trying to hit admin-only route
-  const isAdminOnly = ADMIN_ROUTES.some((p) => pathname.startsWith(p));
+  const isAdminOnly = ADMIN_ROUTES.filter((p) => p !== "/dashboard").some((p) =>
+    pathname.startsWith(p)
+  );
   if (isAdminOnly && !adminToken) {
-     if (pathname !== "/dashboard") {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
-    }
+    return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
   return NextResponse.next();
