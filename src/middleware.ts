@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const CUSTOMER_ROUTES = ["/dashboard"];
-const ADMIN_ROUTES = ["/customers", "/qr", "/campaigns", "/settings"];
+const ADMIN_ROUTES = ["/dashboard", "/customers", "/qr", "/campaigns", "/settings", "/rewards"];
 const PROTECTED = [...CUSTOMER_ROUTES, ...ADMIN_ROUTES];
 
 export async function middleware(req: NextRequest) {
@@ -12,11 +12,6 @@ export async function middleware(req: NextRequest) {
   if (pathname === "/") {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
-
-  // Legacy redirects
-  if (pathname.startsWith("/customer/dashboard")) return NextResponse.redirect(new URL("/dashboard", req.url));
-  if (pathname.startsWith("/customer/login"))     return NextResponse.redirect(new URL("/login", req.url));
-  if (pathname.startsWith("/customer/register"))  return NextResponse.redirect(new URL("/register", req.url));
 
   const isProtected = PROTECTED.some((p) => pathname.startsWith(p));
   if (!isProtected) return NextResponse.next();
@@ -28,14 +23,15 @@ export async function middleware(req: NextRequest) {
 
   if (!adminToken && !customerToken) {
     const url = new URL("/login", req.url);
-    url.searchParams.set("from", pathname);
     return NextResponse.redirect(url);
   }
 
   // Customer trying to hit admin-only route
   const isAdminOnly = ADMIN_ROUTES.some((p) => pathname.startsWith(p));
   if (isAdminOnly && !adminToken) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+     if (pathname !== "/dashboard") {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
   }
 
   return NextResponse.next();

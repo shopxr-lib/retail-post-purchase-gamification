@@ -53,7 +53,7 @@ function ErrBox({ msg }: { msg: string }) {
 }
 
 // ─── Customer panel ───────────────────────────────────────────────────────────
-function CustomerPanel({ from }: { from: string }) {
+function CustomerPanel() {
   const router = useRouter();
   const { addToast } = useUIStore();
   const [step, setStep] = useState<CustomerStep>("email");
@@ -83,7 +83,7 @@ function CustomerPanel({ from }: { from: string }) {
       fd.set("purpose", "LOGIN");
       const r = await verifyOTPAndLogin(fd);
       if (r.error) { setError(r.error); }
-      else { addToast({ type: "success", title: "Welcome back! 🎉" }); router.push(from); }
+      else { addToast({ type: "success", title: "Welcome back! 🎉" }); router.push("/dashboard"); }
     });
   };
 
@@ -224,8 +224,6 @@ function AdminPanel() {
 
 // ─── Main login page ──────────────────────────────────────────────────────────
 function LoginForm() {
-  const searchParams = useSearchParams();
-  const from = searchParams.get("from") ?? "/dashboard";
   const [tab, setTab] = useState<Tab>("customer");
 
   return (
@@ -301,7 +299,7 @@ function LoginForm() {
                 transition={{ duration: 0.15 }}
               >
                 {tab === "customer"
-                  ? <CustomerPanel from={from} />
+                  ? <CustomerPanel />
                   : <AdminPanel />
                 }
               </motion.div>
