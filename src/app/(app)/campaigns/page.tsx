@@ -2,7 +2,6 @@ import { GAME_LABELS } from "@/constants";
 import { requireAdminSession } from "@/lib/auth/session";
 import { db } from "@/lib/db/prisma";
 import { capitalize } from "@/lib/utils";
-import { ProbabilityMode } from "@prisma/client";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -48,72 +47,6 @@ export default async function CampaignsPage() {
     },
     orderBy: { startDate: "desc" },
   });
-
-  // 👇 TEST SEED (safe: checks by name before insert)
-  for (const c of campaigns) {
-    const now = new Date();
-    const start = new Date(c.startDate);
-    const end = c.endDate ? new Date(c.endDate) : null;
-
-    const isActive = !c.deletedAt && c.status !== 2 && start <= now && (!end || end >= now);
-
-    console.log("🔍 Checking campaign:", {
-      id: c.id,
-      name: c.name,
-      isActive,
-      existingPrizes: c.prizes.length,
-    });
-
-    if (!isActive) continue;
-
-    const existingNames = new Set(c.prizes.map((p) => p.name));
-
-    const testPrizes = [
-      {
-        name: "Jackpot on 20th Play",
-        type: 3,
-        value: "$500 Shopping Spree",
-        winningProbabilityMode: "CREDIT_COUNT" as ProbabilityMode,
-        winningProbabilityValue: 20,
-      },
-      {
-        name: "Jackpot on 30th Play",
-        type: 3,
-        value: "$1000 Shopping Spree",
-        winningProbabilityMode: "CREDIT_COUNT" as ProbabilityMode,
-        winningProbabilityValue: 30,
-      },
-      {
-        name: "Jackpot on 40th Play",
-        type: 3,
-        value: "$2000 Shopping Spree",
-        winningProbabilityMode: "CREDIT_COUNT" as ProbabilityMode,
-        winningProbabilityValue: 40,
-      },
-    ];
-
-    const toInsert = testPrizes.filter((p) => !existingNames.has(p.name));
-
-    console.log("🧪 Test prizes for campaign:", {
-      campaignId: c.id,
-      toInsertCount: toInsert.length,
-      toInsert,
-    });
-
-    if (toInsert.length > 0) {
-      await db.prize.createMany({
-        data: toInsert.map((p) => ({
-          ...p,
-          campaignId: c.id,
-        })),
-      });
-
-      console.log("✅ Inserted test prizes:", {
-        campaignId: c.id,
-        inserted: toInsert.map((p) => p.name),
-      });
-    }
-  }
 
   return (
     <div className="space-y-6">
