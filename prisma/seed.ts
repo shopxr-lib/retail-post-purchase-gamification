@@ -192,6 +192,7 @@ async function main() {
   // console.log("Customer: info@shopxr.org  (OTP to email)");
 
   // Find your active campaign
+  console.log("Finding active campaign..")
   const campaign = await db.campaign.findFirst({
     where: {
       name: "Summer 2026 Rewards",
