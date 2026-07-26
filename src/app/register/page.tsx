@@ -132,7 +132,7 @@ export default function CustomerRegisterPage() {
 
           <p className="text-center text-xs text-muted-foreground">
             Already have an account?{" "}
-            <a href="/login" className="text-brand-600 font-medium hover:underline">
+            <a href="/login/customer" className="text-brand-600 font-medium hover:underline">
               Sign in
             </a>
           </p>

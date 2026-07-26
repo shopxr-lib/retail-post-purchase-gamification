@@ -46,11 +46,6 @@ export function RewardsSection({ prizes }: { prizes: CustomerPrize[] }) {
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-bold text-slate-800">{snap?.name ?? "Prize"}</p>
-                        {snap?.value && (
-                          <p className="mt-0.5 text-xs font-semibold text-brand-600">
-                            {snap.value}
-                          </p>
-                        )}
                         <p className="mt-1 text-xs text-slate-400">
                           Won {new Date(p.wonAt).toLocaleString()}
                         </p>

@@ -1,43 +1,15 @@
 "use client";
 
 import { useState, useTransition, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
-import { sendLoginOTP, verifyOTPAndLogin } from "@/actions/auth/customer-actions";
 import { useUIStore } from "@/stores";
 import { authClient } from "@/lib/auth/admin-client";
 
 // ─── Shared styles ────────────────────────────────────────────────────────────
 const inputCls =
   "w-full rounded-xl border border-slate-200 bg-white/80 px-4 py-3 text-sm text-slate-900 placeholder-slate-400 outline-none shadow-sm transition-all duration-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-400/20 focus:bg-white";
-const otpInputCls =
-  "w-full rounded-xl border border-slate-200 bg-white/80 px-4 py-4 text-center text-2xl font-mono tracking-[0.5em] text-slate-900 outline-none shadow-sm transition-all focus:border-brand-400 focus:ring-2 focus:ring-brand-400/20";
-
-type Tab = "customer" | "admin";
-type CustomerStep = "email" | "otp";
-
-// ─── Tab pill ─────────────────────────────────────────────────────────────────
-function TabPill({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`relative flex-1 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 ${
-        active ? "text-white" : "text-slate-500 hover:text-slate-700"
-      }`}
-    >
-      {active && (
-        <motion.span
-          layoutId="tab-bg"
-          className="absolute inset-0 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 shadow-md"
-        />
-      )}
-      <span className="relative flex items-center justify-center gap-1.5">
-        {label}
-      </span>
-    </button>
-  );
-}
 
 // ─── Error box ────────────────────────────────────────────────────────────────
 function ErrBox({ msg }: { msg: string }) {
@@ -49,106 +21,6 @@ function ErrBox({ msg }: { msg: string }) {
     >
       {msg}
     </motion.p>
-  );
-}
-
-// ─── Customer panel ───────────────────────────────────────────────────────────
-function CustomerPanel() {
-  const router = useRouter();
-  const { addToast } = useUIStore();
-  const [step, setStep] = useState<CustomerStep>("email");
-  const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
-
-  const sendCode = () => {
-    setError(null);
-    startTransition(async () => {
-      const fd = new FormData();
-      fd.set("identifier", email);
-      fd.set("purpose", "LOGIN");
-      const r = await sendLoginOTP(fd);
-      if (r.error) { setError(r.error); }
-      else { setStep("otp"); addToast({ type: "info", title: "Code sent!", message: `Check ${email}` }); }
-    });
-  };
-
-  const verify = () => {
-    setError(null);
-    startTransition(async () => {
-      const fd = new FormData();
-      fd.set("identifier", email);
-      fd.set("code", code);
-      fd.set("purpose", "LOGIN");
-      const r = await verifyOTPAndLogin(fd);
-      if (r.error) { setError(r.error); }
-      else { addToast({ type: "success", title: "Welcome back! 🎉" }); router.push("/dashboard"); }
-    });
-  };
-
-  return (
-    <AnimatePresence mode="wait">
-      {step === "email" ? (
-        <motion.div key="email" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Email address</label>
-            <input
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              onKeyDown={e => e.key === "Enter" && email && sendCode()}
-              className={inputCls}
-              autoFocus
-            />
-          </div>
-          {error && <ErrBox msg={error} />}
-          <button
-            onClick={sendCode}
-            disabled={isPending || !email}
-            className="w-full rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 py-3 text-sm font-bold text-white shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40 hover:brightness-105 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
-          >
-            {isPending ? (
-              <span className="flex items-center justify-center gap-2"><span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Sending…</span>
-            ) : "Send me a code →"}
-          </button>
-          <p className="text-center text-xs text-slate-400">
-            No account?{" "}
-            <a href="/register" className="text-brand-600 font-semibold hover:underline">Create one free</a>
-          </p>
-        </motion.div>
-      ) : (
-        <motion.div key="otp" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">6-digit code</label>
-            <p className="text-xs text-slate-400 mb-3">Sent to <span className="font-semibold text-slate-600">{email}</span></p>
-            <input
-              className={otpInputCls}
-              placeholder="• • • • • •"
-              maxLength={6}
-              value={code}
-              onChange={e => setCode(e.target.value.replace(/\D/g, ""))}
-              onKeyDown={e => e.key === "Enter" && code.length === 6 && verify()}
-              autoFocus
-            />
-          </div>
-          {error && <ErrBox msg={error} />}
-          <button
-            onClick={verify}
-            disabled={isPending || code.length !== 6}
-            className="w-full rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 py-3 text-sm font-bold text-white shadow-lg shadow-brand-500/25 hover:brightness-105 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
-          >
-            {isPending ? (
-              <span className="flex items-center justify-center gap-2"><span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Verifying…</span>
-            ) : "Sign In ✓"}
-          </button>
-          <button onClick={() => { setStep("email"); setCode(""); setError(null); }} className="w-full text-xs text-slate-400 hover:text-slate-600 transition text-center">
-            ← Different email
-          </button>
-        </motion.div>
-      )}
-    </AnimatePresence>
   );
 }
 
@@ -224,7 +96,6 @@ function AdminPanel() {
 
 // ─── Main login page ──────────────────────────────────────────────────────────
 function LoginForm() {
-  const [tab, setTab] = useState<Tab>("customer");
 
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-slate-100 via-white to-sky-50">
@@ -283,25 +154,15 @@ function LoginForm() {
               <p className="text-slate-400 text-sm mt-1">Sign in to your account to continue</p>
             </div>
 
-            {/* Tabs */}
-            <div className="flex gap-1 p-1 bg-slate-100 rounded-xl mb-7">
-              <TabPill active={tab === "customer"} onClick={() => setTab("customer")} label="Customer" />
-              <TabPill active={tab === "admin"}    onClick={() => setTab("admin")}    label="Admin" />
-            </div>
-
             {/* Panel */}
             <AnimatePresence mode="wait">
               <motion.div
-                key={tab}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.15 }}
               >
-                {tab === "customer"
-                  ? <CustomerPanel />
-                  : <AdminPanel />
-                }
+                <AdminPanel />
               </motion.div>
             </AnimatePresence>
           </div>

@@ -180,7 +180,7 @@ function EditCampaignForm({ campaign, onSaved }: { campaign: Campaign; onSaved: 
       {/* Game Type */}
       <div>
         <label className="mb-1.5 block text-xs font-semibold tracking-wide text-slate-500">
-          Active Game
+          Game Type
         </label>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {[1, 2, 3, 4, 5].map((g) => (
@@ -653,12 +653,15 @@ export function CampaignDetailClient({ campaign }: { campaign: Campaign }) {
           >
             {showEdit ? "× Discard" : "Edit"}
           </button> */}
-          <Link
-            href="/campaigns"
+          <button
+            onClick={() => {
+              if (window.history.length > 1) router.back();
+              else router.push("/campaigns");
+            }}
             className="text-sm text-slate-400 transition hover:text-slate-700"
           >
             ← Back
-          </Link>
+          </button>
         </div>
       </div>
 
@@ -689,7 +692,7 @@ export function CampaignDetailClient({ campaign }: { campaign: Campaign }) {
               { label: "QRs Generated", value: campaign._count.qrCodes },
               { label: "Game Plays", value: campaign._count.gamePlays },
               { label: "Prizes", value: campaign.prizes.length },
-              { label: "Credit Rate", value: `$${campaign.creditsPerUnit}`, suffix: "/credit" },
+              { label: "Game Credit", value: `$${campaign.creditsPerUnit}`, suffix: "/credit" },
             ].map((s) => (
               <div
                 key={s.label}
@@ -728,7 +731,7 @@ export function CampaignDetailClient({ campaign }: { campaign: Campaign }) {
               </div>
               <div>
                 <dt className="mb-1 text-xs font-semibold tracking-wide text-slate-400">
-                  Active Game
+                  Game Type
                 </dt>
                 <dd className="font-semibold text-slate-800">
                   {capitalize(GAME_LABELS[campaign.gameType])}
@@ -741,7 +744,7 @@ export function CampaignDetailClient({ campaign }: { campaign: Campaign }) {
           <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
             <div className="mb-2 flex items-center justify-between">
               <h2 className="flex items-center gap-2 font-bold text-slate-900">
-                Prizes
+                Prizes & Probability
                 {pctPrizes.length > 0 && (
                   <span
                     className={`ml-1 rounded-full px-2.5 py-1 text-xs font-bold ${pctOk ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}

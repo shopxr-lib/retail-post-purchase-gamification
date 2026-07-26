@@ -2,6 +2,7 @@ import { cookies, headers } from "next/headers";
 import { jwtVerify } from "jose";
 import { db } from "@/lib/db/prisma";
 import { adminAuth } from "@/lib/auth/admin-auth";
+import { RetailStore } from "@prisma/client";
 
 export type UserType = "admin" | "customer";
 
@@ -10,6 +11,7 @@ export interface UnifiedSession {
   id: string;
   name: string;
   email: string;
+  store?: RetailStore;
   phone?: string;
   totalCredits?: number;
 }
@@ -24,10 +26,10 @@ export async function getUnifiedSession(): Promise<UnifiedSession | null> {
     if (session?.user) {
       const admin = await db.staff.findUnique({
         where: { id: session.user.id },
-        select: { id: true, name: true, email: true, isActive: true },
+        select: { id: true, name: true, email: true, store: true, isActive: true },
       });
       if (admin?.isActive) {
-        return { type: "admin", id: admin.id, name: admin.name, email: admin.email };
+        return { type: "admin", id: admin.id, name: admin.name, email: admin.email, store: admin.store };
       }
     }
   } catch {}

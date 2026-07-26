@@ -1,11 +1,11 @@
 import { requireAdminSession } from "@/lib/auth/session";
 import { db } from "@/lib/db/prisma";
-import { AdminRewardsClient } from "./client";
+import { PrizesClient } from "./client";
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Rewards" };
+export const metadata = { title: "Prizes" };
 
-export default async function RewardsPage() {
+export default async function PrizesPage() {
   const session = await requireAdminSession();
 
   const [prizes, stores] = await Promise.all([
@@ -21,7 +21,7 @@ export default async function RewardsPage() {
       take: 50,
       include: {
         customer: { select: { name: true, email: true, phone: true } },
-        claimedBy: { select: { name: true, email: true } },
+        claimedBy: { select: { name: true, email: true, store: { select: { name: true } } } },
       },
     }),
     db.retailStore.findMany({
@@ -30,11 +30,15 @@ export default async function RewardsPage() {
       orderBy: { name: "asc" },
     }),
   ]);
+
   return (
-    <AdminRewardsClient
-      prizes={prizes as any}
+    <PrizesClient
+      prizes={prizes.map(prize => ({
+        ...prize,
+        claimStore: prize.claimedBy?.store
+      })) as any}
       stores={stores}
-      admin={{ name: session.name, email: session.email }}
+      admin={{ name: session.name, email: session.email, store: session.store! }}
     />
   );
 }

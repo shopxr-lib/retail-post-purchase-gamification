@@ -2,33 +2,36 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signOutAdmin } from "@/actions/auth/admin-actions";
 
 const NAV_ITEMS = [
-  { href: "/dashboard",  label: "Dashboard" },
-  { href: "/campaigns",  label: "Campaigns" },
-  // { href: "/games",      label: "Games" },
-  { href: "/qr",         label: "QR Codes" },
-  { href: "/customers",  label: "Customers" },
-  { href: "/rewards",    label: "Rewards" },
-  { href: "/settings",   label: "Settings" },
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/campaigns", label: "Campaigns" },
+  { href: "/qr",        label: "QR Codes" },
+  { href: "/orders",    label: "Orders" },
+  { href: "/prizes",    label: "Prizes" },
+  { href: "/settings",  label: "Settings" },
 ];
 
 export function AdminShell({ children, user }: { children: React.ReactNode; user: { name: string; email: string } }) {
   const pathname = usePathname();
   const [signingOut, setSigningOut] = useState(false);
+  const [pendingHref, setPendingHref] = useState<string | null>(null);
 
   const handleSignOut = async () => {
     setSigningOut(true);
     await signOutAdmin();
   };
 
+  // Once the route actually changes, clear the pending indicator
+  useEffect(() => {
+    setPendingHref(null);
+  }, [pathname]);
+
   return (
     <div className="flex min-h-screen bg-slate-50">
-      {/* Sidebar */}
       <aside className="w-60 shrink-0 bg-white border-r border-slate-200 flex flex-col shadow-sm">
-        {/* Logo */}
         <div className="px-5 py-5 border-b border-slate-100">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center shadow-glow-brand">
@@ -41,17 +44,18 @@ export function AdminShell({ children, user }: { children: React.ReactNode; user
           </div>
         </div>
 
-        {/* Nav */}
         <nav className="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
           {NAV_ITEMS.map((item) => {
             const active =
               item.href === "/dashboard"
                 ? pathname === "/dashboard"
                 : pathname.startsWith(item.href);
+            const isPending = pendingHref === item.href && !active;
             return (
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => setPendingHref(item.href)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                   active
                     ? "bg-brand-50 text-brand-700 shadow-sm"
@@ -60,12 +64,14 @@ export function AdminShell({ children, user }: { children: React.ReactNode; user
               >
                 {item.label}
                 {active && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-brand-500" />}
+                {isPending && (
+                  <span className="ml-auto h-3 w-3 animate-spin rounded-full border-2 border-brand-300 border-t-brand-600" />
+                )}
               </Link>
             );
           })}
         </nav>
 
-        {/* User */}
         <div className="px-4 py-4 border-t border-slate-100 bg-slate-50/50">
           <div className="flex items-center gap-2.5 mb-3">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-xs font-bold">
@@ -86,7 +92,6 @@ export function AdminShell({ children, user }: { children: React.ReactNode; user
         </div>
       </aside>
 
-      {/* Main content */}
       <main className="flex-1 min-w-0 overflow-y-auto">
         <div className="p-6 lg:p-8 max-w-7xl mx-auto">
           {children}

@@ -129,3 +129,20 @@ export async function redeemQRCode(code: string) {
     return { error: err instanceof Error ? err.message : "Failed to redeem QR code" };
   }
 }
+
+export async function getQRCodeImage(qrCodeId: string) {
+  await requireAdminSession();
+
+  const qr = await db.qRCode.findUnique({ where: { id: qrCodeId } });
+  if (!qr) return { error: "QR code not found" };
+  if (qr.status !== "ACTIVE") return { error: "This QR code is no longer active" };
+
+  const qrImageUrl = await QRCode.toDataURL(qr.code, {
+    width: 320,
+    margin: 2,
+    color: { dark: "#0f172a", light: "#ffffff" },
+    errorCorrectionLevel: "M",
+  });
+
+  return { success: true, qrCode: qr.code, qrImageUrl, creditsGranted: qr.creditsGranted };
+}

@@ -50,7 +50,7 @@ export function AdminDashboardClient({ staff, stats, activeCampaign }: Props) {
             <p className="mt-1 text-xs font-medium text-slate-400">{s.label}</p>
 
             {/* subtle index accent */}
-            <div className="absolute right-3 top-3 text-[10px] text-slate-200">0{i + 1}</div>
+            <div className="absolute right-3 top-3 text-[10px] text-slate-400">0{i + 1}</div>
           </div>
         ))}
       </div>

@@ -1,6 +1,7 @@
 import { requireAdminSession } from "@/lib/auth/session";
 import { db } from "@/lib/db/prisma";
 import { QRGeneratorClient } from "@/components/shared/QRGeneratorClient";
+import { QRViewButton } from "@/components/shared/QRViewButton";
 export const dynamic = "force-dynamic";
 
 export const metadata = { title: "QR Codes — Admin" };
@@ -107,6 +108,7 @@ export default async function QRPage() {
                     "Staff",
                     "Status",
                     "Date",
+                    "Action",
                   ].map((h) => (
                     <th key={h} className="whitespace-nowrap px-6 py-3">
                       {h}
@@ -169,6 +171,10 @@ export default async function QRPage() {
                     {/* DATE */}
                     <td className="whitespace-nowrap px-6 py-4 text-xs text-slate-400">
                       {new Date(qr.createdAt).toLocaleString()}
+                    </td>
+
+                    <td className="px-6 py-4">
+                      <QRViewButton qrId={qr.id} disabled={qr.status !== "ACTIVE"} />
                     </td>
                   </tr>
                 ))}

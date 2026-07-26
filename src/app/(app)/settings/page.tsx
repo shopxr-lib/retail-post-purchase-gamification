@@ -5,12 +5,18 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Settings — Admin" };
 
 export default async function SettingsPage() {
-  await requireAdminSession();
+  const session = await requireAdminSession();
 
-  const stores = await db.retailStore.findMany({
-    where: { deletedAt: null },
-    orderBy: { name: "asc" },
-  });
+  const [stores, currentStaff] = await Promise.all([
+    db.retailStore.findMany({
+      where: { deletedAt: null },
+      orderBy: { name: "asc" },
+    }),
+    db.staff.findUnique({
+      where: { id: session.id },
+      select: { storeId: true },
+    }),
+  ]);
 
   return (
     <div className="space-y-6 max-w-2xl">
@@ -31,13 +37,19 @@ export default async function SettingsPage() {
           <p className="text-sm text-muted-foreground">No stores found. Run the seed script.</p>
         ) : (
           <ul className="divide-y divide-border">
-            {stores.map((store) => (
-              <li key={store.id} className="py-3 flex items-center justify-between text-sm">
-                <div>
+            {stores.map((store) => {
+              const isCurrent = store.id === currentStaff?.storeId;
+              return (
+                <li key={store.id} className="py-3 flex items-center justify-between text-sm">
                   <p className="font-medium text-foreground">{store.name}</p>
-                </div>
-              </li>
-            ))}
+                  {isCurrent && (
+                    <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
+                      Your store
+                    </span>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         )}
       </div>

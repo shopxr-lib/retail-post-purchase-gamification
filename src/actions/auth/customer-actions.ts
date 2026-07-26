@@ -74,8 +74,7 @@ export async function sendLoginOTP(formData: FormData) {
   const customer = await db.customer.findFirst({ where: { email: identifier } });
 
   if (!customer) {
-    // Security: don't reveal if account exists
-    return { success: true, message: "If an account exists, you'll receive a code shortly." };
+    return { error: "No account found with this email. Please sign up first." };
   }
 
   if (!customer.isActive) {
@@ -144,10 +143,10 @@ export async function verifyOTPAndLogin(formData: FormData) {
 
 export async function logoutCustomer() {
   await destroyCustomerSession();
-  redirect("/login");
+  redirect("/login/customer");
 }
 
 export async function signOutCustomer() {
   await destroyCustomerSession();
-  redirect("/login");
+  redirect("/login/customer");
 }

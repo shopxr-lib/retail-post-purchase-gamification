@@ -1,42 +1,15 @@
 import { requireAdminSession } from "@/lib/auth/session";
 import { db } from "@/lib/db/prisma";
-import CustomersClient from "./client";
+import OrdersClient from "./client";
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Customers — Admin" };
+export const metadata = { title: "Orders — Admin" };
 
-export default async function CustomersPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ search?: string; page?: string }>;
-}) {
-  await requireAdminSession();
-
-  const sp = await searchParams;
-  const search = sp.search ?? "";
-  const page = Math.max(1, Number(sp.page ?? 1));
-  const limit = 20;
-  const skip = (page - 1) * limit;
-
-  const where = {
-    deletedAt: null as null,
-    ...(search
-      ? {
-          OR: [
-            { name: { contains: search, mode: "insensitive" as const } },
-            { email: { contains: search, mode: "insensitive" as const } },
-            { phone: { contains: search, mode: "insensitive" as const } },
-          ],
-        }
-      : {}),
-  };
-
-  const [customers, total] = await Promise.all([
+export default async function OrdersPage() {
+  const session = await requireAdminSession();
+  const [customers] = await Promise.all([
     db.customer.findMany({
-      where,
       orderBy: { createdAt: "desc" },
-      skip,
-      take: limit,
       select: {
         id: true,
         name: true,
@@ -86,15 +59,11 @@ export default async function CustomersPage({
         },
       },
     }),
-    db.customer.count({ where }),
   ]);
 
   return (
-    <CustomersClient
-      total={total}
-      limit={limit}
-      page={page}
-      search={search}
+    <OrdersClient
+      admin={{ name: session.name, email: session.email, store: session.store! }}
       customers={customers.map((c) => ({
         ...c,
         totalSpent: parseFloat(c.totalSpent as any),

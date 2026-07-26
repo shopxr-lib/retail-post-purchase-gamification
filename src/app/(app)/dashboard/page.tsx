@@ -23,24 +23,22 @@ function isActiveCampaign(c: { startDate: Date; endDate: Date | null; status: nu
 
 export default async function DashboardPage() {
   const session = await getUnifiedSession();
-  if (!session) redirect("/login");
+  if (!session) redirect("/login/admin");
 
   // ── ADMIN ──────────────────────────────────────────────────────────────────
   if (session.type === "admin") {
     const now = new Date();
-    const [totalCustomers, totalQRsToday, totalRedemptionsToday, unclaimedPrizes, campaigns] =
+    const [totalCustomers, totalQRs, totalRedemptions, unclaimedPrizes, campaigns] =
       await Promise.all([
         db.customer.count({ where: { deletedAt: null } }),
         db.qRCode.count({
           where: {
-            createdAt: { gte: new Date(now.setHours(0, 0, 0, 0)) },
             generatedById: session.id,
           },
         }),
         db.qRCode.count({
           where: {
             status: "REDEEMED",
-            redeemedAt: { gte: new Date(new Date().setHours(0, 0, 0, 0)) },
             generatedById: session.id,
           },
         }),
@@ -59,86 +57,12 @@ export default async function DashboardPage() {
 
     const activeCampaign = campaigns.find((c) => isActiveCampaign(c)) ?? null;
 
-    // const allCampaigns = await db.campaign.findMany({
-    //     where: { deletedAt: null },
-    //     include: {
-    //       prizes: { select: { id: true, name: true } },
-    //     },
-    //     orderBy: { startDate: "desc" },
-    //   });
-    
-    //   // 👇 TEST SEED (safe: checks by name before insert)
-    //   for (const c of allCampaigns) {
-    //     const now = new Date();
-    //     const start = new Date(c.startDate);
-    //     const end = c.endDate ? new Date(c.endDate) : null;
-    
-    //     const isActive = !c.deletedAt && c.status !== 2 && start <= now && (!end || end >= now);
-    
-    //     console.log("🔍 Checking campaign:", {
-    //       id: c.id,
-    //       name: c.name,
-    //       isActive,
-    //       existingPrizes: c.prizes.length,
-    //     });
-    
-    //     if (!isActive) continue;
-    
-    //     const existingNames = new Set(c.prizes.map((p) => p.name));
-    
-    //     const testPrizes = [
-    //       {
-    //         name: "Jackpot on 20th Play",
-    //         type: 3,
-    //         value: "$500 Shopping Spree",
-    //         winningProbabilityMode: "CREDIT_COUNT" as ProbabilityMode,
-    //         winningProbabilityValue: 20,
-    //       },
-    //       {
-    //         name: "Jackpot on 30th Play",
-    //         type: 3,
-    //         value: "$1000 Shopping Spree",
-    //         winningProbabilityMode: "CREDIT_COUNT" as ProbabilityMode,
-    //         winningProbabilityValue: 30,
-    //       },
-    //       {
-    //         name: "Jackpot on 40th Play",
-    //         type: 3,
-    //         value: "$2000 Shopping Spree",
-    //         winningProbabilityMode: "CREDIT_COUNT" as ProbabilityMode,
-    //         winningProbabilityValue: 40,
-    //       },
-    //     ];
-    
-    //     const toInsert = testPrizes.filter((p) => !existingNames.has(p.name));
-    
-    //     console.log("🧪 Test prizes for campaign:", {
-    //       campaignId: c.id,
-    //       toInsertCount: toInsert.length,
-    //       toInsert,
-    //     });
-    
-    //     if (toInsert.length > 0) {
-    //       await db.prize.createMany({
-    //         data: toInsert.map((p) => ({
-    //           ...p,
-    //           campaignId: c.id,
-    //         })),
-    //       });
-    
-    //       console.log("✅ Inserted test prizes:", {
-    //         campaignId: c.id,
-    //         inserted: toInsert.map((p) => p.name),
-    //       });
-    //     }
-    //   }
-
     const stats = [
       { label: "Total Customers", value: totalCustomers, color: "from-blue-500 to-blue-600" },
-      { label: "QRs Today", value: totalQRsToday, color: "from-violet-500 to-violet-600" },
+      { label: "QRs", value: totalQRs, color: "from-violet-500 to-violet-600" },
       {
-        label: "Redemptions Today",
-        value: totalRedemptionsToday,
+        label: "Redemptions",
+        value: totalRedemptions,
         color: "from-green-500 to-green-600",
       },
       { label: "Unclaimed Prizes", value: unclaimedPrizes, color: "from-orange-500 to-orange-600" },
@@ -158,7 +82,7 @@ export default async function DashboardPage() {
     where: { id: session.id },
     select: { id: true, name: true, email: true, phone: true, totalCredits: true },
   });
-  if (!customer) redirect("/login");
+  if (!customer) redirect("/login/customer");
 
   const [allCampaigns, prizes] = await Promise.all([
     db.campaign.findMany({ where: { deletedAt: null } }),

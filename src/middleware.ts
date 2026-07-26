@@ -17,11 +17,13 @@ export async function middleware(req: NextRequest) {
   if (!isProtected) return NextResponse.next();
 
   const adminToken =
-    req.cookies.get("__Secure-gamify-admin.session_token")?.value;
+    req.cookies.get("__Secure-gamify-admin.session_token")?.value ??
+    req.cookies.get("gamify-admin.session_token")?.value ??
+    req.cookies.get("better-auth.session_token")?.value;
   const customerToken = req.cookies.get("gamify_customer_session")?.value;
 
   if (!adminToken && !customerToken) {
-    const url = new URL("/login", req.url);
+    const url = new URL("/login/admin", req.url);
     return NextResponse.redirect(url);
   }
 
